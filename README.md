@@ -42,8 +42,14 @@ Add the following **Bot Token Scopes** under:
 
 **OAuth & Permissions → Bot Token Scopes**
 
-<img width="664" height="757" alt="Captura desde 2026-02-12 13-08-02" src="https://github.com/user-attachments/assets/a0dd73f6-c2f8-42c8-b4c4-f0ed44921980" />
-
+```
+channels:read
+channels:history
+groups:read
+groups:history
+users:read
+files:read
+```
 
 Then:
 
@@ -56,8 +62,9 @@ Then:
 
 In Slack, for each channel you want to back up:
 
-`/invite @your-bot-name`
-
+```
+/invite @your-bot-name
+```
 
 Only channels where the bot is a member will be archived.
 
@@ -70,6 +77,8 @@ Only channels where the bot is a member will be archived.
 ```bash
 git clone https://github.com/yourname/slack-local-backup.git
 cd slack-local-backup
+```
+
 ---
 
 ### Linux / macOS Setup
@@ -78,5 +87,154 @@ cd slack-local-backup
 python3 -m venv venv
 source venv/bin/activate
 pip install -r requirements.txt
+```
+
+---
+
+### Windows Setup
+
+```powershell
+python -m venv venv
+venv\Scripts\activate
+pip install -r requirements.txt
+```
+
+---
+
+## Step 4 — Configure Environment
+
+Create a `.env` file in the root directory of the repository:
+
+```bash
+SLACK_BOT_TOKEN="xoxb-your-token-here"
+```
+
+---
+
+## Step 5 — Run Manually
+
+### Linux / macOS
+
+```bash
+set -a
+source .env
+set +a
+python backup_slack.py
+```
+
+### Windows (PowerShell)
+
+```powershell
+$env:SLACK_BOT_TOKEN="xoxb-your-token-here"
+python backup_slack.py
+```
+
+---
+
+## Output Structure
+
+After running, the following directory structure will be created:
+
+```
+slack_backup/
+├── data/      # Raw JSONL messages
+├── md/        # Human-readable Markdown archives
+├── files/     # Downloaded attachments
+├── state.json
+└── users.json
+```
+
+---
+
+## Automation (Cross-Platform)
+
+### Linux (cron)
+
+Open crontab:
+
+```bash
+crontab -e
+```
+
+Add:
+
+```
+0 * * * * cd /path/to/repo && . ./.env && ./venv/bin/python backup_slack.py >> ~/slack_backup/cron.log 2>&1
+```
+
+Runs every hour.
+
+---
+
+### macOS (launchd)
+
+Create:
+
+```
+~/Library/LaunchAgents/com.slackbackup.plist
+```
+
+Then load:
+
+```bash
+launchctl load ~/Library/LaunchAgents/com.slackbackup.plist
+```
+
+(See the `examples/` folder for a full plist template.)
+
+---
+
+### Windows (Task Scheduler)
+
+1. Open **Task Scheduler**
+2. Create **Basic Task**
+3. Set Trigger → Repeat every 1 hour
+4. Choose Action → Start a Program
+
+**Program:**
+
+```
+C:\Path\To\repo\venv\Scripts\python.exe
+```
+
+**Start in:**
+
+```
+C:\Path\To\repo\
+```
+
+---
+
+## Limitations
+
+- Only channels where the bot is invited are backed up.
+- Direct Messages (1:1) are not supported.
+- Slack Free plan may limit accessible message history.
+- Deleted Slack messages are not removed locally.
+- Thread replies are stored as normal messages (no thread hierarchy reconstruction).
+
+---
+
+## Security Notes
+
+- The Slack bot token grants read access to channels where it is invited.
+- Store the token securely.
+- Never commit `.env` to version control.
+
+---
+
+## Troubleshooting
+
+### missing_scope
+
+A required permission was not added → reinstall the Slack app.
+
+### not_in_channel
+
+The bot is not invited to that channel.
+
+### rate_limited
+
+Slack rate limit reached → reduce execution frequency.
 
 
