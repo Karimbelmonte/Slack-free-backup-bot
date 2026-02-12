@@ -123,8 +123,6 @@ Create a `.env` file in the root directory of the repository:
 SLACK_BOT_TOKEN="xoxb-your-token-here"
 ```
 
-⚠ Never commit this file to version control.
-
 ---
 
 ## Step 5 — Run Manually
@@ -193,8 +191,6 @@ Then load:
 ```bash
 launchctl load ~/Library/LaunchAgents/com.slackbackup.plist
 ```
-
-(See the `examples/` folder for a full plist template.)
 
 ---
 
