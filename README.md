@@ -1,6 +1,20 @@
-# Slack-free-backup-bot
+[Python 3.10+] [MIT License] [Linux | macOS | Windows]
+
+# Slack Free Backup Bot
 
 Lightweight, incremental Slack backup tool that stores conversations, files, and readable Markdown archives locally.
+
+---
+
+## Quick Start
+
+1. Create a Slack App and generate a Bot Token.
+2. Invite the bot to the channels you want to archive.
+3. Clone this repository.
+4. Set your `SLACK_BOT_TOKEN`.
+5. Run `backup_slack.py`.
+
+That’s it.
 
 ---
 
@@ -23,10 +37,10 @@ Lightweight, incremental Slack backup tool that stores conversations, files, and
 2. The bot is invited to the channels you want to back up.
 3. The script:
    - Fetches new messages incrementally
-   - Saves raw data
-   - Downloads files
+   - Saves raw data (`.jsonl`)
+   - Downloads shared files
    - Regenerates Markdown output
-4. A cron job runs the script automatically.
+4. A scheduler (cron / launchd / Task Scheduler) runs the script automatically.
 
 ---
 
@@ -54,7 +68,7 @@ files:read
 Then:
 
 - Click **Install App**
-- Copy the **Bot User OAuth Token (xoxb-...)**
+- Copy the **Bot User OAuth Token** (`xoxb-...`)
 
 ---
 
@@ -75,8 +89,8 @@ Only channels where the bot is a member will be archived.
 ### Clone the Repository
 
 ```bash
-git clone https://github.com/yourname/slack-local-backup.git
-cd slack-local-backup
+git clone https://github.com/Karimbelmonte/Slack-free-backup-bot.git
+cd Slack-free-backup-bot
 ```
 
 ---
@@ -108,6 +122,8 @@ Create a `.env` file in the root directory of the repository:
 ```bash
 SLACK_BOT_TOKEN="xoxb-your-token-here"
 ```
+
+⚠ Never commit this file to version control.
 
 ---
 
@@ -149,8 +165,6 @@ slack_backup/
 ## Automation (Cross-Platform)
 
 ### Linux (cron)
-
-Open crontab:
 
 ```bash
 crontab -e
@@ -225,16 +239,14 @@ C:\Path\To\repo\
 
 ## Troubleshooting
 
-### missing_scope
+### `missing_scope`
 
 A required permission was not added → reinstall the Slack app.
 
-### not_in_channel
+### `not_in_channel`
 
 The bot is not invited to that channel.
 
-### rate_limited
+### `rate_limited`
 
 Slack rate limit reached → reduce execution frequency.
-
-
